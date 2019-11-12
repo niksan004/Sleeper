@@ -4,6 +4,8 @@
 const int chipSelect = 10;
 const int PIR = 2;
 const int MIC = A4;
+const int number_of_readings = 600;
+const int func_delay = 100;
 char file_name[32];
 char data_in_file[32];
 
@@ -25,7 +27,7 @@ void setup(void) {
 
   if(!SD.begin(chipSelect)){
      Serial.println("Card failed, or not present"); 
-     return;
+     //return;
   } 
   Serial.println("initialised");  
   
@@ -45,28 +47,39 @@ void loop() {
 }
 
 void movements_and_sound_per_min(){
-  //Sound Variables
+  //Movement Variables
   int present_reading_movement = 0;
   float sum_of_readings_movement = 0;
 
-  //Movement Variables
+  //Sound Variables
   int present_reading_sound = 0;
   int past_reading_sound = 0;
   float sum_of_readings_sound = 0;
-  int number_of_readings = 600;
+  int max_sound = 0;
 
-  for(int i=0; i<600; i++){
+  for(int i=0; i<number_of_readings; i++){
     present_reading_movement = digitalRead(PIR);
     sum_of_readings_movement += present_reading_movement;
+    //Serial.println(present_reading_movement);
 
     present_reading_sound = analogRead(MIC);
-    if(past_reading_sound == 0){past_reading_sound = present_reading_sound;}
+    if(past_reading_sound == 0){ past_reading_sound = present_reading_sound; }
+    
     sum_of_readings_sound += abs(present_reading_sound - past_reading_sound);
+    
+    if(max_sound == 0 || abs(present_reading_sound - past_reading_sound) > max_sound){ 
+      max_sound = abs(present_reading_sound - past_reading_sound); 
+    }
     past_reading_sound = present_reading_sound;
-    delay(100);  
+    delay(func_delay);  
   }
   
-  dataFile.print((int)(sum_of_readings_movement / number_of_readings * 100));
+  /*dataFile.print((int)(sum_of_readings_movement / number_of_readings * 100));
   dataFile.print(", ");
-  dataFile.println((int)sum_of_readings_sound);
+  dataFile.println((int)(sum_of_readings_sound / number_of_readings));*/
+  Serial.print((int)(sum_of_readings_movement / number_of_readings * 100));
+  Serial.print(", ");
+  Serial.print((int)(sum_of_readings_sound / number_of_readings));
+  Serial.print(", ");
+  Serial.println(max_sound);
 }
