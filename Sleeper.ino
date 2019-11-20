@@ -4,7 +4,7 @@
 const int chipSelect = 10;          //D10 за SD card logger
 const int PIR = 2;                  //Инициализация на пин за сензора за движение
 const int MIC = A4;                 //Инициализация на пин за микрофона
-const int number_of_readings = 60; //Променливите за четенията и забавянето са нагласени така,
+const int number_of_readings = 600; //Променливите за четенията и забавянето са нагласени така,
 const int func_delay = 100;         //че по-късно функцията да трае 1 минута
 char file_name[32];                 //Инициализация на името на файла
 char date_in_file[32];              //Инициализация на датата във файла
@@ -43,6 +43,7 @@ void loop() {
   sprintf(date_in_file, "%4d/%02d/%02d %02d:%02d", now.year(), now.month(), now.day(), now.hour(), now.minute()); //Създаване на датата във файла
   movements_and_sound_per_min();
 
+  //Отваряне и принтиране във файла
   data_file = SD.open(file_name, FILE_WRITE);
   Serial.println("file open");
   if(data_file){
@@ -90,11 +91,6 @@ void movements_and_sound_per_min(){
     delay(func_delay);  
   }
   
-//  data_file.print((int)(sum_of_readings_movement / number_of_readings * 100));
-//  data_file.print(",");
-//  data_file.print((int)(sum_of_readings_sound / number_of_readings * 100));
-//  data_file.print(",");
-//  data_file.println(max_sound * 100);
   movement = sum_of_readings_movement / number_of_readings * 100;
   sound = sum_of_readings_sound / number_of_readings * 100;
   max_sound = max_sound * 100;
