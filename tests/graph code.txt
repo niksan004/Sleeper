@@ -1,0 +1,42 @@
+import matplotlib
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import numpy as np
+import pandas as pd
+import csv
+
+x = []
+y1 = []
+y2 = []
+y3 = []
+
+with open('Niki2.CSV','r') as csvfile:
+    plots = csv.reader(csvfile, delimiter=',')
+    for row in plots:
+        x.append(pd.to_datetime(row[0]))
+        y1.append(float(row[1]))
+        y2.append(float(row[2]))
+        y3.append(float(row[3]) / 100)
+        
+fig = plt.figure(figsize=(25,10))
+ax = fig.add_subplot()
+
+ax.set_title('Граф на съня', fontsize=50, pad=25, fontweight='bold')
+ax.set_xlabel('Нива на параметрите', fontsize=30, labelpad=20)
+ax.set_ylabel('Време', fontsize=30, labelpad=20)
+
+ax.plot(x, y1, label='Движение', color='tab:green')
+ax.plot(x, y2, label='Среден шум')
+ax.plot(x, y3, label='Най-висок шум в минута')
+
+ax.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(interval=30))
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+
+for tick in ax.xaxis.get_major_ticks():
+    tick.label.set_fontsize(14)
+
+for tick in ax.yaxis.get_major_ticks():
+    tick.label.set_fontsize(14)
+    
+ax.legend(loc=9,fontsize=14)
+fig.savefig("example3.png")
