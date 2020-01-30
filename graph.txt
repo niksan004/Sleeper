@@ -1,0 +1,145 @@
+import matplotlib
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import pandas as pd
+import numpy as np
+import csv
+
+time = []
+movement = []
+sound_avg = []
+sound_max = []
+
+no_movement = 0
+little_movement = 0
+awake = 0
+all_minutes = 0
+
+class Graph:
+
+    fig = plt.figure(figsize=(15, 10))
+    time_title = []
+    file_name = ''
+
+    def __init__(self, file_name):
+        self.file_name = file_name
+        with open(file_name + '.csv', 'r') as csvfile:
+            plots = csv.reader(csvfile, delimiter=',')
+            for row in plots:
+                time.append(pd.to_datetime(row[0]))
+                self.time_title.append(row[0])
+                movement.append(int(row[1]))
+                sound_avg.append(int(row[2]))
+                sound_max.append(int(row[3]))
+
+    def entitle_fig(self):
+        x = self.time_title[0].split()
+        self.fig.suptitle(f'Графика на съня - {x[0]}', fontsize=40, fontweight='bold')
+
+    def movement(self):
+        m = self.fig.add_subplot(313)
+        m.plot(time, movement, label='Движение', color='tab:green')
+        m.set_xlabel('Време', fontsize=30)
+        m.set_ylabel('Движение(%)', fontsize=20)
+        m.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(interval=30))
+        m.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+
+    def sound_avg(self):
+        sa = self.fig.add_subplot(312)
+        sa.plot(time, sound_avg, label='Среден шум', color='tab:blue')
+        sa.set_ylabel('Среден шум', fontsize=20)
+        sa.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(interval=30))
+        sa.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+
+    def sound_max(self):
+        sm = self.fig.add_subplot(311)
+        sm.plot(time, sound_max, label='Най-висок шум', color='tab:orange')
+        sm.set_ylabel('Максимален шум', fontsize=20)
+        sm.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(interval=30))
+        sm.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+
+    def save(self):
+        self.fig.savefig(self.file_name + '.png')
+
+class Analysis:
+
+    def movement_data(self):
+        for perc in movement:
+            if perc == 0:
+                global no_movement
+                no_movement += 1
+            elif perc > 0 and perc < 20:
+                global little_movement
+                little_movement += 1
+            else:
+                global awake
+                awake += 1
+
+            global all_minutes
+            all_minutes += 1
+
+    def deep_sleep(self):
+        ds = little_movement / all_minutes
+        return little_movement
+
+    def REM(self):
+        REM = 0
+        additional = 0
+
+        all_minutes - 70
+        REM + 15
+
+        for c in range(int(all_minutes / 90)):
+            REM += 15
+            additional += 2
+
+        return int(REM + additional)
+
+
+    def light_sleep(self):
+        ds = self.deep_sleep()
+        REM = self.REM()
+        return all_minutes - (ds + REM)
+
+    def range(self):
+        REM_lower = (20/100) * all_minutes
+        REM_upper = (25/100) * all_minutes
+
+        deep_lower = (13/100) * all_minutes
+        deep_upper = (23/100) * all_minutes
+
+        return [(REM_lower, REM_upper), (deep_lower, deep_upper)]
+
+
+class Histogram(Analysis):
+
+    fig = plt.figure()
+
+    def chart(self):
+        stages = ('Awake', 'Light sleep', 'Deep sleep', 'REM')
+        y_pos = np.arange(len(stages))
+        time = [awake, self.light_sleep(), self.deep_sleep(), self.REM()]
+        width = 0.5
+
+        ax = self.fig.add_subplot()
+        ax.set_title('Фази на съня')
+        ax.set_xlabel('Време')
+        ax.set_ylabel('Фази')
+
+        ax.barh(y_pos, time)
+
+        self.fig.savefig('test')
+
+g = Graph('201912120227')
+a = Analysis()
+h = Histogram()
+
+a.movement_data()
+print(a.light_sleep())
+h.chart()
+
+g.entitle_fig()
+g.movement()
+g.sound_avg()
+g.sound_max()
+g.save()
