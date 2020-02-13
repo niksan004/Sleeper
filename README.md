@@ -8,3 +8,5 @@ The project helps people find the cases in which their sleep is bad (after overe
 
 
 ![Sleep graph - 201912230123](https://user-images.githubusercontent.com/57328380/74420743-9c9d5f00-4e54-11ea-97ef-0e676a75aba0.png)
+
+![Sleep stages - 201912230123](https://user-images.githubusercontent.com/57328380/74421039-12a1c600-4e55-11ea-9c11-88f4208aeec8.png)
