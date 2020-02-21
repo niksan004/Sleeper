@@ -7,8 +7,6 @@ The project consists of a hardware device, based on Arduino Uno, and an  analysi
 The project helps people find the cases in which their sleep is bad (after overeating or alcohol drinking, for example) or good, whether they snort throughout the whole night or just during some periods of it. 
 
 
-<<<<<<< HEAD
 ![Sleep graph - 201912230123](https://user-images.githubusercontent.com/57328380/74420743-9c9d5f00-4e54-11ea-97ef-0e676a75aba0.png)
 
 ![Sleep stages - 201912230123](https://user-images.githubusercontent.com/57328380/74421039-12a1c600-4e55-11ea-9c11-88f4208aeec8.png)
->>>>>>> b31348a19b5b69c53c2bafad9a2c3edc41bf64c2
